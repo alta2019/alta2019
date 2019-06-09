@@ -5,8 +5,9 @@ import Helmet from "react-helmet";
 
 import Layout from "../components/Layout";
 import "../styles/home.scss";
+import HTMLContent from "../components/Content";
 
-export const HomePageTemplate = ({ home }) => {
+export const HomePageTemplate = ({ home, html }) => {
   return (
     <>
       <section className="header">
@@ -25,6 +26,11 @@ export const HomePageTemplate = ({ home }) => {
           </div>
         </div>
       </section>
+      <section className="home-latest-news">
+        <div className="home-latest-news-container container">
+          <HTMLContent content={html}></HTMLContent>
+        </div>
+      </section>
      </>
   );
 };
@@ -35,7 +41,7 @@ class HomePage extends React.Component {
     const {
       data: { footerData, navbarData, site },
     } = this.props;
-    const { frontmatter: home } = data.homePageData.edges[0].node;
+    const { frontmatter: home, html } = data.homePageData.edges[0].node;
     const {
       seo: { title: seoTitle, description: seoDescription, browserTitle },
     } = home;
@@ -46,7 +52,7 @@ class HomePage extends React.Component {
           <meta name="description" content={seoDescription} />
           <title>{browserTitle}</title>
         </Helmet>
-        <HomePageTemplate home={home} />
+        <HomePageTemplate home={home} html={html}/>
       </Layout>
     );
   }
@@ -68,6 +74,7 @@ export const pageQuery = graphql`
     homePageData: allMarkdownRemark(filter: { frontmatter: { templateKey: { eq: "home-page" } } }) {
       edges {
         node {
+          html
           frontmatter {
             title
             description
